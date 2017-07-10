@@ -1,0 +1,1418 @@
+﻿<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>markdownToc</title>
+        <link rel="stylesheet" type="text/css" href="./markdownToc_files/rightpart.css" media="all">
+        <link rel="stylesheet" type="text/css" href="./markdownToc_files/contents.css">
+        <link rel="stylesheet" href="./markdownToc_files/zTreeStyle.css" type="text/css">
+        <style>
+            .ztree li a.curSelectedNode {
+                padding-top: 0px;
+                background-color: #FFE6B0;
+                color: black;
+                height: 16px;
+                border: 1px #FFB951 solid;
+                opacity: 0.8;
+            }
+            .ztree{
+                overflow: auto;
+                height:100%;
+                min-height: 200px;
+                top: 0px;
+            }
+        </style>
+    </head>
+    <body style="">
+        <div>
+            <div style="width:20%;">
+                <ul id="tree" class="ztree" style="width: 260px; overflow: auto; position: fixed; z-index: 2147483647; border: 0px none; left: 0px; bottom: 0px;">
+                <!-- 目录内容在网页另存为之后将插入到此处 -->
+                </ul>
+            </div>
+            <div id="readme" style="width:80%;margin-left:20%;">
+                <article class="markdown-body">
+
+
+<!-- ***********************************************************内容分割线****************************************************************** -->
+<!-- 请把你的html正文部分粘贴到此处，在浏览器中打开之后将会自动生成目录。如果想要将目录保留并嵌入到此文档中，只需在浏览器中“另存为->网页，全部”即可 -->
+<h1><a href="#安全接口文档" name="安全接口文档"></a>安全接口文档</h1>
+<h2><a href="#内容概要" name="内容概要"></a>内容概要</h2>
+<h3><a href="#接口概要" name="接口概要"></a>接口概要</h3>
+<p>安全接口主要对外提供用户/角色/组织机构管理,权限控制,租户管理三方面接口功能.</p>
+<h3><a href="#多租户接口使用说明" name="多租户接口使用说明"></a>多租户接口使用说明</h3>
+<p>多租户接口使用过程中,尽量使用RESTful API ,Java API不一定会提供多租户的静态方法,需要在接口访问url上边添加tenant_id=×××的条件.注意,是&ldquo;tenant_id&rdquo;,需要完全对应.</p>
+<pre><code>http://127.0.0.1:8080/security/rest/user/authenticate?account=xxx&amp;password=yyy&amp;tenant_id=uni076
+</code></pre>
+<h2><a href="#接口类型" name="接口类型"></a>接口类型</h2>
+<h3><a href="#java-api" name="java-api"></a>Java API</h3>
+<p>如果使用dubbo分布式框架的话,可以在集成dubbo的前提下,编程直接调用Java API.</p>
+<blockquote>
+  <p>com.bonc.security.SecurityClient</p>
+</blockquote>
+<p>安全base包提供一个客户端代理类,为所有单租户和部分多租户接口提供一个客户端代理类,方法名与下边具体接口说明中的方法签名一致.</p>
+<h3><a href="#restful-api" name="restful-api"></a>RESTful API</h3>
+<p>按照通用调用RESTful方式请求,前段一般使用ajax请求,后端可通过以下几种方式:</p>
+<ol>
+  <li>HttpURLConnection实现</li>
+  <li>HttpClient实现</li>
+  <li>Spring的RestTemplate</li>
+</ol>
+<h2><a href="#接口调用说明" name="接口调用说明"></a>接口调用说明</h2>
+<p>RESTful API 的使用中,需要将示例中的服务器地址端口改为项目中依赖的安全的服务地址.</p>
+<h3><a href="#用户相关" name="用户相关"></a>用户相关</h3>
+<p>用户实体json字典</p>
+<pre><code>{
+    &quot;id&quot;: 1,    //主键ID
+    &quot;userName&quot;: &quot;管理员&quot;,   //用户姓名
+    &quot;sexId&quot;: 1,    //性别码表ID
+    &quot;sex&quot;: {    //性别实体json
+        &quot;sexCode&quot;: 1,    //性别编码
+        &quot;id&quot;: 1,     
+        &quot;sexName&quot;: &quot;男&quot;
+    },
+    &quot;loginId&quot;: &quot;admin&quot;,    //登录名
+    &quot;password&quot;: &quot;bonc&quot;,    //密码
+    &quot;email&quot;: &quot;1@163.com&quot;,    //邮箱
+    &quot;mobile&quot;: &quot;15201334444&quot;,    //手机号码
+    &quot;memo&quot;: &quot;&quot;,     //备注
+    &quot;isAdmin&quot;: true,    //是否是管理员
+    &quot;updateDate&quot;: 1499421909000,    //更新时间
+    &quot;createDate&quot;: null,    //创建时间
+    &quot;creatUser&quot;: &quot;&quot;,    //创建人ID
+    &quot;isNormal&quot;: null,    //账号状态(true/false)
+    &quot;orgs&quot;: [    //详见组织机构实体json字典
+        {
+            &quot;id&quot;: &quot;1&quot;,
+            &quot;orgName&quot;: &quot;系统租户&quot;,
+            &quot;type&quot;: &quot;111&quot;,
+            &quot;orgType&quot;: {
+                &quot;id&quot;: &quot;111&quot;,
+                &quot;orgtypeName&quot;: &quot;行政机构&quot;
+            },
+            &quot;path&quot;: &quot;/root&quot;,
+            &quot;parentId&quot;: null,
+            &quot;memo&quot;: &quot;&quot;,
+            &quot;createTime&quot;: 1497234548000,
+            &quot;creatUser&quot;: &quot;1&quot;,
+            &quot;ord&quot;: null,
+            &quot;status&quot;: 1,
+            &quot;reserve1&quot;: &quot;&quot;,
+            &quot;reserve2&quot;: &quot;&quot;,
+            &quot;reserve3&quot;: &quot;&quot;,
+            &quot;reserve4&quot;: &quot;1&quot;,
+            &quot;reserve5&quot;: &quot;&quot;,
+            &quot;reserve6&quot;: &quot;&quot;,
+            &quot;reserve7&quot;: &quot;&quot;,
+            &quot;reserve8&quot;: &quot;&quot;,
+            &quot;reserve9&quot;: &quot;&quot;,
+            &quot;reserve10&quot;: &quot;&quot;,
+            &quot;orgClass&quot;: null
+        }
+    ],
+    &quot;roles&quot;: [    //详情见角色json字典
+        {
+            &quot;id&quot;: 1,
+            &quot;roleCode&quot;: &quot;root&quot;,
+            &quot;roleName&quot;: &quot;省级系统管理员&quot;,
+            &quot;createTime&quot;: null,
+            &quot;creatUser&quot;: &quot;&quot;,
+            &quot;parentId&quot;: 0
+        }
+    ],
+    &quot;reserve1&quot;: null,    //预留的五个字段
+    &quot;reserve2&quot;: null,
+    &quot;reserve3&quot;: null,
+    &quot;reserve4&quot;: null,
+    &quot;reserve5&quot;: null
+}
+</code></pre>
+<h4><a href="#身份认证接口" name="身份认证接口"></a>身份认证接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称 </th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法 </th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户/密码认证接口 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/user/authenticate?account=uni076&password=bonc">http://127.0.0.1:8080/security/rest/user/authenticate?account=uni076&password=bonc</a> </td>
+      <td>account:账户，password:密码 </td>
+      <td>{&lsquo;success&rsquo;:&lsquo;true&rsquo;,&lsquo;message&rsquo;:&lsquo;成功&rsquo;,result:用户实体的json } </td>
+      <td>GET</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户/密码认证接口 </td>
+      <td>boolean authentication(String account ,String password) </td>
+      <td>account:账户名，password:口令密码 </td>
+      <td>true/false </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#得到当前登录用户" name="得到当前登录用户"></a>得到当前登录用户</h4>
+<p>a. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>取得当前登录用户对象 </td>
+      <td>Userinfo findCurrentUserinfo(HttpServletRequest request) </td>
+      <td> </td>
+      <td>Userinfo对象 </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>取得当前登录用户 </td>
+      <td>String findCurrentLoginId(HttpServletRequest request) </td>
+      <td> </td>
+      <td>loginId </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#用户信息查询接口-根据用户id-" name="用户信息查询接口-根据用户id-"></a>用户信息查询接口(根据用户id)</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户信息查询 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/user/">http://127.0.0.1:8080/security/rest/user/</a> {id} </td>
+      <td>用户id </td>
+      <td>用户对象的序列化json串 </td>
+      <td>GET </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户信息查新 </td>
+      <td>Userinfo findUserByLoginId(String loginId) </td>
+      <td>loginId:用户登录账号 </td>
+      <td>Userinfo对象 </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#用户列表信息查询接口" name="用户列表信息查询接口"></a>用户列表信息查询接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户列表查询接口(单条件精确匹配) </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/user/list?p=?&v=?">http://127.0.0.1:8080/security/rest/user/list?p=?&v=?</a> </td>
+      <td>P:用户属性(包括组织机构和角色) </td>
+      <td>用户列表的序列化json串 </td>
+      <td>GET </td>
+      <td>参数说明:参数 1-1 </td>
+    </tr>
+    <tr>
+      <td>用户列表查询接口(多条件) </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/user/condition?cond={"loginId":"admin",...">http://127.0.0.1:8080/security/rest/user/condition?cond={"loginId":"admin",...</a>} </td>
+      <td>cond为一个表示条件的key/value组合 </td>
+      <td>用户对象的序列化json串 </td>
+      <td>GET </td>
+      <td>参数说明:参数 1-2 </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户列表查询接口(多条件map) </td>
+      <td>List findUsersByCondition(Map condition) </td>
+      <td>condition:属性条件组合 参数 1-2 </td>
+      <td>List对象列表 </td>
+      <td>部分属性的值作为条件，各条件为and 关系 </td>
+    </tr>
+    <tr>
+      <td>用户列表查询接口(多条件map,带租户) </td>
+      <td>List findUsersByCondition(Map condition,String tenant_id) </td>
+      <td>condition:属性条件组合 参数 1-2 ; tenant_id:租户id </td>
+      <td>List对象列表 </td>
+      <td>部分属性的值作为条件，各条件为and 关系 </td>
+    </tr>
+  </tbody>
+</table>
+<pre><code>参数 1-1
+/*
+ *用户列表查询接口(单条件&amp;精确匹配)请求报文参数说明
+ */
+    // p可取参数,没条件时, 默认查询所有
+    loginId    //用户登录ID
+    userName    //用户姓名
+    mobile    //用户手机号
+    email     //用户邮箱
+    roleId     //用户所属角色ID
+    roleCode    //用户所属角色编码
+    roleName    //用户所属角色名称
+    sexId      //用户性别对应码表ID
+    sexName    //用户性别(男/女)
+    orgId     //用户所属组织机构ID
+    orgName     //用户所属组织机构名称
+ 
+</code></pre>
+<pre><code>参数 1-2
+/*
+ *用户列表查询接口(多条件)请求报文参数说明
+ */
+
+    //cond参数可以取下边任意条件组合(注单条件的除外),各条件and连接,如果要查询null,赋值为null.没条件时, 默认查询所有
+    id      //用户ID
+    loginId     //用户登录名
+    username        //用户名
+    email       //用户邮箱
+    mobile      //用户手机号
+    sex.sexName     //用户性别(男/女)
+    roleId      //用户所属角色ID(单条件)
+    orginfoId       //用户所属组织ID(单条件)
+    //分页参数,可以作为cond参数查询
+    sort    //排序字段
+    sortType    //排序类型(DESC,ASC)
+    start     //从多少条开始
+    limit    //一页限制多少条
+
+</code></pre>
+<h4><a href="#用户数量查询接口" name="用户数量查询接口"></a>用户数量查询接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户数量查询 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/user/count?cond={"loginId":"admin"">http://127.0.0.1:8080/security/rest/user/count?cond={"loginId":"admin"</a>} </td>
+      <td>参数说明:loginId:登录ID;userName:用户姓名 (两参数都为模糊匹配) </td>
+      <td>int </td>
+      <td>GET </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户条数查询</td>
+      <td>int findUserCount(Map&lt;String, Object&gt; map) </td>
+      <td>loginId:用户登录账号 ;userName:用户姓名(两参数都为模糊匹配) </td>
+      <td>int </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#用户拓展属性查询接口" name="用户拓展属性查询接口"></a>用户拓展属性查询接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户拓展属性列表信息查询 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/userExt/find?uid=90949&p=mults">http://127.0.0.1:8080/security/rest/userExt/find?uid=90949&p=mults</a> </td>
+      <td>uid:用户ID p:拓展属性编码 </td>
+      <td>String:用户拓展属值 </td>
+      <td>GET </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户拓展属性列表信息查询 </td>
+      <td>String findUserExtByCode(Long userId,String propCode) </td>
+      <td>uid:用户id propCode:拓展属性编码 </td>
+      <td>String:拓展属性值 </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#用户拓展属性集查询接口" name="用户拓展属性集查询接口"></a>用户拓展属性集查询接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户拓展属性集信息查询 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/userExt/list/{id">http://127.0.0.1:8080/security/rest/userExt/list/{id</a>} </td>
+      <td>用户id </td>
+      <td>用户拓展属性的序列化json串 </td>
+      <td>GET </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户拓展属性集信息查询 </td>
+      <td>Map&lt;String, Object&gt; findUserExt(Long id) </td>
+      <td>id : 用户id </td>
+      <td>Map&lt;String, Object&gt;集合 </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#用户的角色信息查询接口" name="用户的角色信息查询接口"></a>用户的角色信息查询接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户的角色信息查询接口 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/role/list?p=userId&v=1">http://127.0.0.1:8080/security/rest/role/list?p=userId&v=1</a> </td>
+      <td>p:userId(固定) v:用户Id </td>
+      <td>角色列表的序列化json串 </td>
+      <td>GET </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户的角色信息查询接口 </td>
+      <td>List findRolesByUserId(Long userId) </td>
+      <td>userId : 用户id </td>
+      <td>List </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h3><a href="#角色相关" name="角色相关"></a>角色相关</h3>
+<p>角色实体json字典</p>
+<pre><code>{
+    &quot;id&quot;: 1,    //角色ID
+    &quot;roleCode&quot;: &quot;root&quot;,     //角色编码
+    &quot;roleName&quot;: &quot;系统管理员&quot;,     //角色名称
+    &quot;createTime&quot;: null,     //创建日期
+    &quot;creatUser&quot;: &quot;1&quot;,     //创建用户ID
+    &quot;parentId&quot;: 0   //父级角色ID
+}
+</code></pre>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>角色信息查询接口 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/role/{id">http://127.0.0.1:8080/security/rest/role/{id</a>} </td>
+      <td>角色id </td>
+      <td>角色信息的序列化json串 </td>
+      <td>GET </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>角色信息查询接口 </td>
+      <td>Roleinfo findRoleById(Long id) </td>
+      <td>id : 角色id </td>
+      <td>Roleinfo对象信息 </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#角色信息查询接口-多条件-" name="角色信息查询接口-多条件-"></a>角色信息查询接口(多条件)</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>角色信息查询接口(多条件) </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/role/condition?cond={"roleCode":"root"">http://127.0.0.1:8080/security/rest/role/condition?cond={"roleCode":"root"</a>} </td>
+      <td>cond为一个表示条件的key/value组合 </td>
+      <td>角色信息的序列化json串 </td>
+      <td>GET </td>
+      <td>条件说明:参数 2-1 </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>角色信息查询接口(多条件) </td>
+      <td>List findRoleByCondition(Map&lt;String, Object&gt; condition) </td>
+      <td>条件的map集合 参数2-1 </td>
+      <td>List </td>
+      <td>map的key可取:key可取:id roleName roleCode creatUser parentRole.id </td>
+    </tr>
+    <tr>
+      <td>角色信息查询接口(多条件,带租户) </td>
+      <td>List findRoleByCondition(Map&lt;String, Object&gt; condition) </td>
+      <td>condition:条件的map集合; tenant_id:租户id </td>
+      <td>List </td>
+      <td>map的key可取:key可取:参数 2-1 </td>
+    </tr>
+  </tbody>
+</table>
+<pre><code>参数 2-1
+/*
+ * 角色信息查询接口(多条件)
+ */
+
+    //cond参数可以取下边任意条件组合(注单条件的除外),各条件and连接,如果要查询null,赋值为null.没条件时, 默认查询所有
+    roleCode    //角色编码
+    roleName    //角色名称(模糊匹配)
+    createTime  //创建时间(可模糊匹配)
+    creatUser   //用户ID
+    parentRole.id   //父级角色ID
+    sort        //排序字段
+    sortType    //排序类型(DESC,ASC)
+    start       //开始条数
+    limit       //限制多少条
+</code></pre>
+<h4><a href="#角色新增-修改" name="角色新增-修改"></a>角色新增/修改</h4>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称 </th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法 </th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>角色新增/修改 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/roleinfo/saveOrUpdate">http://127.0.0.1:8080/security/rest/roleinfo/saveOrUpdate</a> </td>
+      <td>roleinfo的json串 参数 2-2 </td>
+      <td>{&lsquo;success&rsquo;:&lsquo;true&rsquo;,&lsquo;message&rsquo;:&lsquo;保存成功&rsquo;,result:保存成功的roleinfo的json串 } </td>
+      <td>post </td>
+      <td>入口传ID , 则为修改, 不传ID/传入ID不存在, 则为新增 </td>
+    </tr>
+  </tbody>
+</table>
+<pre><code>参数 2-2
+/*
+ * 角色新增修改输入参数
+ */
+ 
+{
+    &quot;id&quot;: 2,        //角色ID
+    &quot;roleCode&quot;: &quot;manage&quot;,       //角色编码
+    &quot;roleName&quot;: &quot;省份管理员&quot;,       //角色名称
+    &quot;createTime&quot;: 1491111465000,    //创建日期
+    &quot;creatUser&quot;: &quot;1&quot;,       创建用户ID(String)
+    &quot;parentId&quot;: 1       父级角色ID
+}
+ 
+</code></pre>
+<h4><a href="#删除角色" name="删除角色"></a>删除角色</h4>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称 </th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法 </th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>删除角色 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/roleinfo/delete?id=100">http://127.0.0.1:8080/security/rest/roleinfo/delete?id=100</a> </td>
+      <td>id:角色ID </td>
+      <td>{&lsquo;success&rsquo;:&lsquo;true&rsquo;,&lsquo;message&rsquo;:&lsquo;删除成功&rsquo;,result:null} </td>
+      <td>delete </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#角色数量查询接口" name="角色数量查询接口"></a>角色数量查询接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>角色数量查询 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/role/count?cond={"roleCode":"root"">http://127.0.0.1:8080/security/rest/role/count?cond={"roleCode":"root"</a>} </td>
+      <td>参数 2-3 </td>
+      <td>int </td>
+      <td>GET </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>角色条数查询</td>
+      <td>int int findRoleCount(Map&lt;String, Object&gt; map) </td>
+      <td>参数 2-3 </td>
+      <td>int </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<pre><code>参数 2-3
+
+/*
+ * 角色数量查询接口参数(均为模糊查询)
+ */
+    
+    roleCode    //角色编码
+    roleName    //角色名称
+    createTime      //创建时间
+    
+</code></pre>
+<h3><a href="#组织机构相关" name="组织机构相关"></a>组织机构相关</h3>
+<p>组织机构实体json字典</p>
+<pre><code>{
+    &quot;id&quot;: &quot;ALL&quot;,        //机构编码(String)
+    &quot;orgName&quot;: &quot;全国&quot;,      //机构名称
+    &quot;type&quot;: &quot;111&quot;,      //机构类型
+    &quot;orgType&quot;: {        //机构类型实体
+        &quot;id&quot;: &quot;111&quot;,
+        &quot;orgtypeName&quot;: &quot;行政机构&quot;
+    },
+    &quot;path&quot;: &quot;/ALL&quot;,     //机构层级路径
+    &quot;parentId&quot;: null,       //父级机构编码
+    &quot;memo&quot;: null,       //备注
+    &quot;createTime&quot;: 1487064288000,    //创建时间
+    &quot;creatUser&quot;: &quot;1&quot;,       //创建人ID
+    &quot;ord&quot;: null,            //排序
+    &quot;status&quot;: 1,        //状态(是否失效,1:有效,0:失效)
+    &quot;reserve1&quot;: null,       //预留字段
+    &quot;reserve2&quot;: null,
+    &quot;reserve3&quot;: null,
+    &quot;reserve4&quot;: null,
+    &quot;reserve5&quot;: null,
+    &quot;reserve6&quot;: null,
+    &quot;reserve7&quot;: null,
+    &quot;reserve8&quot;: null,
+    &quot;reserve9&quot;: null,
+    &quot;reserve10&quot;: null,
+    &quot;orgClass&quot;: null    //机构分类
+}
+</code></pre>
+<h4><a href="#组织机构列表信息查询接口" name="组织机构列表信息查询接口"></a>组织机构列表信息查询接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>组织机构列表查询接口(单条件) </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/org/condition?p=orgName&v='全国">http://127.0.0.1:8080/security/rest/org/condition?p=orgName&v='全国</a>&rsquo; </td>
+      <td>p:组织机构属性 v:属性值 详细见 参数 3-1 </td>
+      <td>组织机构对象的序列化json串 </td>
+      <td>GET </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>组织机构列表查询接口(多条件) </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/org/list?cond={"orgName":"研发二部"">http://127.0.0.1:8080/security/rest/org/list?cond={"orgName":"研发二部"</a>} </td>
+      <td>cond为一个表示条件的key/value组合,详细见 参数 3-2 </td>
+      <td>组织机构对象的序列化json串 </td>
+      <td>GET </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户列表查询接口 </td>
+      <td>List findOrgByCondition(Map condition) </td>
+      <td>condition:属性条件组合 </td>
+      <td>List对象列表 </td>
+      <td>参数 3-2 </td>
+    </tr>
+  </tbody>
+</table>
+<pre><code>参数 3-1
+/*
+ * 组织机构查询(单条件)请求报文
+/*
+
+    //p为空默认查询所有
+    orgName     //机构名称
+    parentOrgId     //父级机构ID
+    userName        //用户姓名
+    userId          //用户ID
+    loginId         //用户登录ID
+</code></pre>
+<pre><code>参数 3-2
+/*
+ * 组织机构查询(多条件)请求报文
+/*
+
+    //cond各参数and连接,cond为空,默认查询所有
+    id      //机构编码(ID)
+    orgName     //机构名称(模糊匹配)
+    parentOrg.id     //父级机构ID
+    parentOrg.orgName  //父级机构名称(模糊匹配)
+    orgType          //机构类型
+    path         //机构层级路径(模糊匹配)
+</code></pre>
+<h4><a href="#组织机构新增" name="组织机构新增"></a>组织机构新增</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>组织机构新增 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/org/save">http://127.0.0.1:8080/security/rest/org/save</a> </td>
+      <td>请求参数:参数3-3 </td>
+      <td>true/false </td>
+      <td>post </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<pre><code>参数 3-3
+/*
+ * 组织机构新增请求报文
+/*
+
+{
+    &quot;id&quot;: &quot;Q000001&quot;,
+    &quot;orgName&quot;: &quot;东方国信东方国信东方国信QQ&quot;, 
+    &quot;orgType&quot;:
+       {&quot;id&quot;:&quot;111&quot;},
+    &quot;path&quot;: &quot;/ALL/A/C/E/F/QQ&quot;,
+    &quot;parentId&quot;: &quot;F&quot;,
+    &quot;memo&quot;: &quot;&quot;,
+    &quot;createTime&quot;: 1491361588000,
+    &quot;creatUser&quot;: &quot;1&quot;,
+    &quot;ord&quot;: null,
+    &quot;status&quot;: 1,
+    &quot;reserve1&quot;: &quot;&quot;, 
+    &quot;reserve2&quot;: &quot;&quot;,
+    &quot;reserve3&quot;: &quot;&quot;,
+    &quot;reserve4&quot;: &quot;&quot;,
+    &quot;reserve5&quot;: &quot;&quot;,
+    &quot;reserve6&quot;: &quot;&quot;,
+    &quot;reserve7&quot;: &quot;&quot;,
+    &quot;reserve8&quot;: &quot;&quot;,
+    &quot;reserve9&quot;: &quot;&quot;,
+    &quot;reserve10&quot;: &quot;&quot;,
+    &quot;orgClass&quot;: null 
+}
+</code></pre>
+<h3><a href="#租户相关" name="租户相关"></a>租户相关</h3>
+<p>租户实体json字典(1.0.6版本)</p>
+<pre><code>{
+    &quot;tenantId&quot;: &quot;tenant_system&quot;,    //租户ID
+    &quot;tenantCode&quot;: &quot;tenant_system&quot;,      //租户编码(多租户版本特有,和租户ID一致,兼容原来版本)
+    &quot;remark&quot;: null,         //备注
+    &quot;tenantName&quot;: &quot;系统租户&quot;,       //租户名称
+    &quot;ord&quot;: 1,           //排序
+    &quot;isSystem&quot;: true,       //是否是系统租户
+    &quot;parentId&quot;: null        //父级租户ID
+}
+</code></pre>
+<h4><a href="#租户认证接口" name="租户认证接口"></a>租户认证接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>判定当前租户是否有效 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/tenant/validate/{租户id">http://127.0.0.1:8080/security/rest/tenant/validate/{租户id</a> } </td>
+      <td>租户id </td>
+      <td>{ &lsquo;success&rsquo;:&lsquo;true&rsquo;,&lsquo;message&rsquo;:&lsquo;成功&rsquo;,result:租户实体json } </td>
+      <td>GET </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>判定当前租户是否有效 </td>
+      <td>boolean validateTenant(String tenantId) </td>
+      <td>tenantId:租户id </td>
+      <td>boolean:true/fasle </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#租户新增" name="租户新增"></a>租户新增</h4>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称 </th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法 </th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>租户新增 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/tenant/save">http://127.0.0.1:8080/security/rest/tenant/save</a> </td>
+      <td>tenantInfo的json串,查上边实体字典 </td>
+      <td>{&lsquo;success&rsquo;:&lsquo;true&rsquo;,&lsquo;message&rsquo;:&lsquo;保存成功&rsquo;,result:保存成功的tenantInfo的json串 } </td>
+      <td>post</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#用户的租户id查询接口" name="用户的租户id查询接口"></a>用户的租户ID查询接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户的租户ID查询 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/user/findTenantId?loginId=admin">http://127.0.0.1:8080/security/rest/user/findTenantId?loginId=admin</a> </td>
+      <td>用户登录名 </td>
+      <td>String : tenantID </td>
+      <td>GET </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>用户的租户ID查询 </td>
+      <td>String findTenantIdByloginId(String loginId) </td>
+      <td>loginId : 登录名 </td>
+      <td>String : tenantId </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h3><a href="#权限相关" name="权限相关"></a>权限相关</h3>
+<h4><a href="#鉴权接口" name="鉴权接口"></a>鉴权接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>鉴权接口(资源id) </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/permission/has?rid=xxx&uid=yyy">http://127.0.0.1:8080/security/rest/permission/has?rid=xxx&uid=yyy</a> </td>
+      <td>rid:资源id,uid:用户id </td>
+      <td>是否有权限 true;false </td>
+      <td>GET </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>鉴权接口(资源code) </td>
+      <td><a href="http://127.0.0.1:8080/security/rest//permission/hasByCode?resourceCode=xxx&uid=yyy">http://127.0.0.1:8080/security/rest//permission/hasByCode?resourceCode=xxx&uid=yyy</a> </td>
+      <td>resourceCode:资源编码,uid:用户id </td>
+      <td>是否有权限 true;false </td>
+      <td>GET </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>获取主体的权限列表 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/permission/list?sid=yyy">http://127.0.0.1:8080/security/rest/permission/list?sid=yyy</a> </td>
+      <td>sid:主体id </td>
+      <td>权限对象集的json表示 </td>
+      <td>GET </td>
+      <td>主体id目前主要是userId ，也可以是角色id，组织id </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>鉴权接口(资源id) </td>
+      <td>boolean isPermission(Long resourceId, Long userId) </td>
+      <td>reourceId:资源id，userId:用户id </td>
+      <td>是否许可访问：true/false </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>鉴权接口(资源code) </td>
+      <td>boolean hasPermissionByCode(String resourceCode, Long userId) </td>
+      <td>resourceCode:资源code，userId:用户id </td>
+      <td>是否许可访问：true/false </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>获取主体的权限列表 </td>
+      <td>List listPermission (long subjectId) </td>
+      <td>subjectId:主体id </td>
+      <td>权限对象的列表 </td>
+      <td>主体id目前主要是userId，也可以是角色id，组织id </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#授权接口" name="授权接口"></a>授权接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>授权接口 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/authorize?resourceId=xxx&masterValue=yyy&masterType=zzz">http://127.0.0.1:8080/security/rest/authorize?resourceId=xxx&masterValue=yyy&masterType=zzz</a> </td>
+      <td>resourceId:资源id，masterValue:主体值, masterType:主体类型 </td>
+      <td> </td>
+      <td>PUT </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>授权接口 </td>
+      <td>void authorize(Long resourceId,String masterValue,String masterType) </td>
+      <td>resourceId:资源id，masterValue:主体值, masterType:主体类型 </td>
+      <td>void </td>
+      <td>resourceId 特指数据实体类资源 </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#菜单授权" name="菜单授权"></a>菜单授权</h4>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>菜单授权 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/privilege/dataAuth?authIds=SECURITY_MANAGE&masterType=USER&masterValue=100028">http://127.0.0.1:8080/security/rest/privilege/dataAuth?authIds=SECURITY_MANAGE&masterType=USER&masterValue=100028</a> </td>
+      <td>authIds:菜单menu_code,多个用&ldquo;,&rdquo;隔开. masterType:主体类型(USER,ROLE,ORG) ,masterValue:主体ID(用户ID,角色ID,组织机构ID) </td>
+      <td>{&ldquo;success&rdquo;:true,&ldquo;message&rdquo;:&ldquo;授权成功!&rdquo;,&ldquo;result&rdquo;:&ldquo;SECURITY_MANAGE&rdquo;} result为授权成功的菜单编码 </td>
+      <td>GET </td>
+      <td>注意:使用该接口有一些约定规则,首页菜单/门户菜单的url资源编码为:PORTAL_MENU,过滤规则中首页菜单过滤规则的编码为:MENUINFO_CODE </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#菜单权限收回" name="菜单权限收回"></a>菜单权限收回</h4>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>菜单权限收回 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/privilege/dataCancel?cancelIds=SECURITY_MANAGE&masterType=USER&masterValue=100028">http://127.0.0.1:8080/security/rest/privilege/dataCancel?cancelIds=SECURITY_MANAGE&masterType=USER&masterValue=100028</a> </td>
+      <td>cancelIds:菜单menu_code,多个用&ldquo;,&rdquo;隔开. masterType:主体类型(USER,ROLE,ORG) ,masterValue:主体ID(用户ID,角色ID,组织机构ID) </td>
+      <td>{&ldquo;success&rdquo;:true,&ldquo;message&rdquo;:&ldquo;收回权限成功!&rdquo;,&ldquo;result&rdquo;:&ldquo;SECURITY_MANAGE&rdquo;} result为取消成功的菜单编码 </td>
+      <td>GET </td>
+      <td>注意:使用该接口有一些约定规则,首页菜单/门户菜单的url资源编码为:PORTAL_MENU,过滤规则中首页菜单过滤规则的编码为:MENUINFO_CODE </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#资源注册接口" name="资源注册接口"></a>资源注册接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>资源注册接口 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/resource/">http://127.0.0.1:8080/security/rest/resource/</a> </td>
+      <td>Resource对象的json格式：例{ &lsquo;resourceName&rsquo; : &lsquo;bpm&rsquo;,&lsquo;resourceType&rsquo; : &lsquo;1&rsquo; } </td>
+      <td>资源ID </td>
+      <td>POST </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>资源注册接口 </td>
+      <td>String registerResource(Resources resources) </td>
+      <td>resource:资源对象实例 </td>
+      <td>统一资源编码 </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h3><a href="#日志相关" name="日志相关"></a>日志相关</h3>
+<h4><a href="#日志记录接口" name="日志记录接口"></a>日志记录接口</h4>
+<p>a. RESTful API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>日志记录接口 </td>
+      <td><a href="http://127.0.0.1:8080/security/rest/log/logsave">http://127.0.0.1:8080/security/rest/log/logsave</a> </td>
+      <td>admin,security,/security/masterType!list.action </td>
+      <td>无返回值 </td>
+      <td>POST </td>
+      <td>参数输入为字符串(loginId,syscode,访问URL),用&ldquo;,&rdquo;隔开 </td>
+    </tr>
+  </tbody>
+</table>
+<p>b. Java API</p>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称　</th>
+      <th>方法签名 </th>
+      <th>输入说明 </th>
+      <th>返回值说明</th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>日志记录接口 </td>
+      <td>void saveLog(String loginId,String syscode,String requestUrl) </td>
+      <td>loginId:账号名，syscode:系统编码, requestUrl:访问URL </td>
+      <td>void:无返回值 </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h3><a href="#门户菜单相关" name="门户菜单相关"></a>门户菜单相关</h3>
+<p>门户菜单接口信息可在门户接口中查看更新.</p>
+<p>门户菜单单实体json字典</p>
+<pre><code>{
+    &quot;id&quot;: 100,          //ID
+    &quot;menuCode&quot;: &quot;PORTAL_MANAGE&quot;,        //菜单编码
+    &quot;menuName&quot;: &quot;门户管理&quot;,             //菜单名称
+    &quot;menuDesc&quot;: &quot;门户管理&quot;,             //菜单描述
+    &quot;url&quot;: null,                        //菜单URL
+    &quot;appSysCode&quot;: null,                 //归属门户应用空间编码
+    &quot;serviceAppCode&quot;: null,             //菜单所属的服务提供方的appCode
+    &quot;icon&quot;: &quot;th-large&quot;,                 //图标
+    &quot;parentId&quot;: null                    //父级菜单ID
+    &quot;ord&quot;: 61,                          //排序
+    &quot;isDisable&quot;: null,                  //是否隐藏
+}
+</code></pre>
+<h4><a href="#菜单新增-修改" name="菜单新增-修改"></a>菜单新增/修改</h4>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称 </th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法 </th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>菜单新增/修改 </td>
+      <td><a href="http://127.0.0.1:8080/portal/rest/menuinfo/saveOrUpdate">http://127.0.0.1:8080/portal/rest/menuinfo/saveOrUpdate</a> </td>
+      <td>PortalMenuinfo的json串 如:见门户菜单实体json字典 </td>
+      <td>{&lsquo;success&rsquo;:&lsquo;true&rsquo;,&lsquo;message&rsquo;:&lsquo;保存成功&rsquo;,result:修改成功的PortalMenuinfo的json串 } </td>
+      <td>post </td>
+      <td>入口传ID , 则为修改, 不传ID, 则为新增 </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#删除菜单" name="删除菜单"></a>删除菜单</h4>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称 </th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法 </th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>删除菜单 </td>
+      <td><a href="http://127.0.0.1:8080/portal/rest/menuinfo/delete?id=1|">http://127.0.0.1:8080/portal/rest/menuinfo/delete?id=1|</a> id:菜单ID </td>
+      <td>{&lsquo;success&rsquo;:&lsquo;true&rsquo;,&lsquo;message&rsquo;:&lsquo;删除成功&rsquo;,result:null} </td>
+      <td>delete </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h4><a href="#菜单查询" name="菜单查询"></a>菜单查询</h4>
+<table>
+  <thead>
+    <tr>
+      <th>接口名称 </th>
+      <th>url 举例 </th>
+      <th>输入 </th>
+      <th>输出 </th>
+      <th>请求方法 </th>
+      <th>备注 </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>菜单查询 </td>
+      <td><a href="http://127.0.0.1:8080/portal/rest/menuinfo/list?cond={"id":"1"">http://127.0.0.1:8080/portal/rest/menuinfo/list?cond={"id":"1"</a>} </td>
+      <td>完全查询:id:菜单id,parentMenu.id:父级ID;模糊匹配:menuCode:菜单编码,menuName:菜单名称,menuDesc:菜单描述,serviceAppCode:菜单所属的服务提供方的appCode </td>
+      <td>list的json串 </td>
+      <td>get </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<h2><a href="#技术支持" name="技术支持"></a>技术支持</h2>
+<p>安全门户技术支持群QQ:610402041</p>
+
+
+<!-- ***********************************************************内容分割线****************************************************************** -->
+
+                </article>
+            </div>
+        </div>
+    <script src="./markdownToc_files/jquery-1.10.2.min.js"></script>
+    <script src="./markdownToc_files/jquery.ztree.all-3.5.min.js"></script>
+    <script src="./markdownToc_files/jquery.ztree_toc.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#tree').ztree_toc({
+                is_auto_number:false,
+                documment_selector:'.markdown-body',
+                is_expand_all: true
+            });
+        });
+    </script>
+    </body>
+</html>
